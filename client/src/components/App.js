@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Router } from "@reach/router";
 import NotFound from "./pages/NotFound.js";
 import Skeleton from "./pages/Skeleton.js";
+import Home from "./pages/Home.js";
 
 import "../utilities.css";
 
@@ -17,29 +18,36 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: undefined,
+      // userId: null,
+      spotifyId: null,
     };
   }
 
   componentDidMount() {
     get("/api/whoami").then((user) => {
-      if (user._id) {
+      if (user.spotifyId) {
         // they are registed in the database, and currently logged in.
-        this.setState({ userId: user._id });
+        this.setState({
+          // userId: user._id,
+          spotifyId: user.spotifyId,
+        });
       }
     });
   }
 
   handleLogin = () => {
     get("/api/spotifyLogin").then((data) => {
-      console.log((data))
-      window.location.href = data.url
-    })
-  }
+      console.log(data);
+      window.location.href = data.url;
+    });
+  };
 
   handleLogout = () => {
-    this.setState({ userId: undefined });
-    console.log("logging out")
+    this.setState({
+      // userId: null,
+      spotifyId: null,
+    });
+    console.log("logging out");
     post("/api/logout");
   };
 
@@ -47,11 +55,17 @@ class App extends Component {
     return (
       <>
         <Router>
-          <Skeleton
-            path="/"
+          {/* <Skeleton
+            path="/skeleton"
             handleLogin={this.handleLogin}
             handleLogout={this.handleLogout}
             userId={this.state.userId}
+          /> */}
+          <Home
+            path="/"
+            handleLogin={this.handleLogin}
+            handleLogout={this.handleLogout}
+            spotifyId={this.state.spotifyId}
           />
           <NotFound default />
         </Router>

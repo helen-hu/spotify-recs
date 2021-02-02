@@ -1,13 +1,8 @@
 import React, { Component } from "react";
-import GoogleLogin, { GoogleLogout } from "react-google-login";
-
 import "../../utilities.css";
 import "./Skeleton.css";
 
 import { get, post } from "../../utilities";
-
-//TODO: REPLACE WITH YOUR OWN CLIENT_ID
-const GOOGLE_CLIENT_ID = "121479668229-t5j82jrbi9oejh7c8avada226s75bopn.apps.googleusercontent.com";
 
 class Skeleton extends Component {
   constructor(props) {
@@ -20,21 +15,18 @@ class Skeleton extends Component {
     // remember -- api calls go here!
   }
 
-
-
   getPlaylists = () => {
     get("/api/playlists").then((data) => {
       console.log(data);
       this.setState({ display: true });
-    })
-  }
+    });
+  };
 
   getMe = () => {
     get("/api/getMe").then((data) => {
-      console.log(data.body)
-    })
-  }
-
+      console.log(data.body);
+    });
+  };
 
   render() {
     return (
@@ -60,7 +52,13 @@ class Skeleton extends Component {
         <button onClick={this.getPlaylists}>get playlists</button>
         <button onClick={this.getMe}>getMe</button>
         <button onClick={this.props.handleLogout}>logout</button>
-        {this.props.userId ? <div>check your console log and explore the object there for user {this.props.userId}</div> : <div></div>}
+        {this.props.userId ? (
+          <div>
+            check your console log and explore the object there for user {this.props.userId}
+          </div>
+        ) : (
+          <div></div>
+        )}
       </>
     );
   }

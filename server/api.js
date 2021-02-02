@@ -22,9 +22,9 @@ const router = express.Router();
 const socket = require("./server-socket");
 
 // documentation here https://www.npmjs.com/package/spotify-web-api-node
-const SpotifyWebApi = require('spotify-web-api-node');
+const SpotifyWebApi = require("spotify-web-api-node");
 
-// TODO: create an account at https://developer.spotify.com/dashboard/ 
+// TODO: create an account at https://developer.spotify.com/dashboard/
 // fill in your spotify developer information in .env
 const spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_API_ID,
@@ -32,14 +32,14 @@ const spotifyApi = new SpotifyWebApi({
   redirectUri: process.env.CALLBACK_URI,
 });
 
-router.get('/spotifyLogin', (req, res) => {
+router.get("/spotifyLogin", (req, res) => {
   auth.spotifyLogin(req, res, spotifyApi);
-})
-router.get('/callback', async (req, res) => {
+});
+router.get("/callback", async (req, res) => {
   auth.callback(req, res, spotifyApi);
 });
 
-router.get('/playlists', async (req, res) => {
+router.get("/playlists", async (req, res) => {
   try {
     const loggedInSpotifyApi = new SpotifyWebApi({
       clientId: process.env.SPOTIFY_API_ID,
@@ -49,16 +49,16 @@ router.get('/playlists', async (req, res) => {
     loggedInSpotifyApi.setRefreshToken(req.user.refreshToken);
     loggedInSpotifyApi.refreshAccessToken().then(async (data) => {
       console.log("Access Token Refreshed!");
-      loggedInSpotifyApi.setAccessToken(data.body['access_token']);
+      loggedInSpotifyApi.setAccessToken(data.body["access_token"]);
       const result = await loggedInSpotifyApi.getUserPlaylists();
       res.status(200).send(result.body);
-    })
+    });
   } catch (err) {
     res.status(400).send(err);
   }
 });
 
-router.get('/getMe', (req, res) => {
+router.get("/getMe", (req, res) => {
   const loggedInSpotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_API_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
@@ -66,16 +66,18 @@ router.get('/getMe', (req, res) => {
   });
   loggedInSpotifyApi.setRefreshToken(req.user.refreshToken);
   loggedInSpotifyApi.refreshAccessToken().then((data) => {
-    loggedInSpotifyApi.setAccessToken(data.body['access_token']);
-    loggedInSpotifyApi.getMe()
-      .then(function (data) {
-        console.log('Some information about the authenticated user', data.body);
-        res.send(data)
-      }, function (err) {
-        console.log('Something went wrong!', err);
-      });
+    loggedInSpotifyApi.setAccessToken(data.body["access_token"]);
+    loggedInSpotifyApi.getMe().then(
+      function (data) {
+        console.log("Some information about the authenticated user", data.body);
+        res.send(data);
+      },
+      function (err) {
+        console.log("Something went wrong!", err);
+      }
+    );
   });
-})
+});
 
 router.post("/logout", auth.logout);
 router.get("/whoami", (req, res) => {

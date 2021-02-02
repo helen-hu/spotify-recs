@@ -1,13 +1,17 @@
-// const { OAuth2Client } = require("google-auth-library");
 const User = require("./models/user");
 const socket = require("./server-socket");
 
-scopes = ['user-read-private', 'user-read-email', 'playlist-modify-public', 'playlist-modify-private'];
+scopes = [
+  "user-read-private",
+  "user-read-email",
+  "playlist-modify-public",
+  "playlist-modify-private",
+];
 
 // gets user from DB, or makes a new account if it doesn't exist yet
 function getOrCreateUser(user, refreshToken) {
   // the "sub" field means "subject", which is a unique identifier for each user
-  console.log("user's id is " + user.id)
+  console.log("user's id is " + user.id);
   return User.findOne({ spotifyId: user.id }).then((existingUser) => {
     if (existingUser) {
       existingUser.refreshToken = refreshToken;
@@ -24,39 +28,45 @@ function getOrCreateUser(user, refreshToken) {
 }
 
 const spotifyLogin = (req, res, spotifyApi) => {
-  var html = spotifyApi.createAuthorizeURL(scopes)
-  console.log(html)
-  res.send({ url: html })
-}
+  var html = spotifyApi.createAuthorizeURL(scopes);
+  console.log(html);
+  res.send({ url: html });
+};
 
 const callback = async (req, res, spotifyApi) => {
   const { code } = req.query;
-  console.log(code)
+  console.log(code);
   try {
-    const data = await spotifyApi.authorizationCodeGrant(code)
+    const data = await spotifyApi.authorizationCodeGrant(code);
     const { access_token: accessToken, refresh_token: refreshToken } = data.body;
     spotifyApi.setAccessToken(accessToken);
     spotifyApi.setRefreshToken(refreshToken);
-    spotifyApi.getMe()
+    spotifyApi
+      .getMe()
+      .then(
+        (user) => {
+          console.log("Some information about the authenticated user", user.body);
+          return getOrCreateUser(user.body, refreshToken);
+        },
+        (err) => {
+          console.log("Something went wrong!", err);
+        }
+      )
       .then((user) => {
-        console.log('Some information about the authenticated user', user.body);
-        return getOrCreateUser(user.body, refreshToken)
-      }, (err) => {
-        console.log('Something went wrong!', err);
-      }).then((user) => {
         req.session.user = user;
         spotifyApi.resetAccessToken();
         spotifyApi.resetRefreshToken();
-        res.redirect('/');
-      }).catch((err) => {
+        res.redirect("/");
+      })
+      .catch((err) => {
         console.log(`Failed to log in: ${err}`);
         res.status(401).send({ err });
       });
   } catch (err) {
     console.log(err);
-    res.redirect('/#/error/invalid token');
+    res.redirect("/#/error/invalid token");
   }
-}
+};
 
 function logout(req, res) {
   req.session.user = null;
