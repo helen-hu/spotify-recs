@@ -1,0 +1,14 @@
+.Home-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.Home-header {
+  text-align: center;
+}
+
+.Home-formContainer {
+}
+
+.Home-trackContainer {
+}

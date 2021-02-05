@@ -20,6 +20,7 @@ class App extends Component {
     this.state = {
       // userId: null,
       spotifyId: null,
+      genreSeeds: null,
     };
   }
 
@@ -32,6 +33,12 @@ class App extends Component {
           spotifyId: user.spotifyId,
         });
       }
+    });
+    get("/api/getGenreSeeds").then((data) => {
+      // console.log(data);
+      this.setState({
+        genreSeeds: data.genres,
+      });
     });
   }
 
@@ -66,6 +73,7 @@ class App extends Component {
             handleLogin={this.handleLogin}
             handleLogout={this.handleLogout}
             spotifyId={this.state.spotifyId}
+            genreSeeds={this.state.genreSeeds}
           />
           <NotFound default />
         </Router>

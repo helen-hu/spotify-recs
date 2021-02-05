@@ -38,15 +38,16 @@ const callback = async (req, res, spotifyApi) => {
   console.log(code);
   try {
     const data = await spotifyApi.authorizationCodeGrant(code);
-    const { access_token: accessToken, refresh_token: refreshToken } = data.body;
-    spotifyApi.setAccessToken(accessToken);
-    spotifyApi.setRefreshToken(refreshToken);
+    console.log("data body", data.body);
+    const { access_token, refresh_token } = data.body;
+    spotifyApi.setAccessToken(access_token);
+    spotifyApi.setRefreshToken(refresh_token);
     spotifyApi
       .getMe()
       .then(
         (user) => {
-          console.log("Some information about the authenticated user", user.body);
-          return getOrCreateUser(user.body, refreshToken);
+          // console.log("Some information about the authenticated user", user.body);
+          return getOrCreateUser(user.body, refresh_token);
         },
         (err) => {
           console.log("Something went wrong!", err);
@@ -54,8 +55,8 @@ const callback = async (req, res, spotifyApi) => {
       )
       .then((user) => {
         req.session.user = user;
-        spotifyApi.resetAccessToken();
-        spotifyApi.resetRefreshToken();
+        // spotifyApi.resetAccessToken();
+        // spotifyApi.resetRefreshToken();
         res.redirect("/");
       })
       .catch((err) => {
