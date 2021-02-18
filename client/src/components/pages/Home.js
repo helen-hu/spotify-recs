@@ -94,6 +94,7 @@ class Home extends Component {
       },
       recs: [],
       seedResults: [],
+      value: null,
     };
   }
 
@@ -121,6 +122,32 @@ class Home extends Component {
       });
     });
   };
+  handleChange = (event) => {
+    this.setState({ value: event.target.value });
+  };
+  handleSubmit = (event) => {
+    alert("A value was submitted: " + this.state.value);
+    event.preventDefault();
+  };
+  renderForm = () => {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label htmlFor="tempo">
+          tempo
+          <input
+            type="range"
+            id="tempo"
+            name="tempo"
+            min="40"
+            max="200"
+            onChange={this.handleChange}
+          />
+        </label>
+        <output htmlFor="tempo">{this.state.value}</output>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  };
 
   render() {
     return (
@@ -139,9 +166,10 @@ class Home extends Component {
 
         <div className="Home-container">
           <div className="Home-formContainer">
-            <h3>form</h3>
             <button onClick={this.getGenreSeeds}>get genre seeds</button>
             <button onClick={this.getRecs}>get recommendations</button>
+            <h3>form</h3>
+            {this.renderForm()}
           </div>
 
           <div className="Home-trackContainer">
