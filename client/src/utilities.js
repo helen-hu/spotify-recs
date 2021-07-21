@@ -61,3 +61,63 @@ export function post(endpoint, params = {}) {
       throw `POST request to ${endpoint} failed with error:\n${error}`;
     });
 }
+
+// min and max values for sliders
+export const sliderRanges = {
+  acousticness: {
+    min: 0,
+    max: 1,
+  },
+  danceability: {
+    min: 0,
+    max: 1,
+  },
+  duration: {
+    min: 0,
+    max: 1,
+  },
+  energy: {
+    min: 0,
+    max: 1,
+  },
+  instrumentalness: {
+    min: 0,
+    max: 1,
+  },
+  key: {
+    min: 0,
+    max: 1,
+  },
+  liveness: {
+    min: 0,
+    max: 1,
+  },
+  loudness: {
+    min: 0,
+    max: 1,
+  },
+  mode: {
+    min: 0,
+    max: 1,
+  },
+  popularity: {
+    min: 0,
+    max: 1,
+  },
+  speechiness: {
+    min: 0,
+    max: 1,
+  },
+  tempo: {
+    min: 40,
+    max: 200,
+  },
+  time_signature: {
+    min: 0,
+    max: 1,
+  },
+  valence: {
+    min: 0,
+    max: 1,
+  },
+};

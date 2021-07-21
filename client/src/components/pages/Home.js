@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import "../../utilities.css";
 import "./Home.css";
-
-import { get, post } from "../../utilities";
+import { get, post, sliderRanges } from "../../utilities";
+import Slider from "./Slider";
 
 /**
  * Proptypes
@@ -100,6 +100,10 @@ class Home extends Component {
 
   componentDidMount() {}
 
+  componentDidUpdate() {
+    console.log(this.state);
+  }
+
   getMe = () => {
     get("/api/getMe").then((data) => {
       console.log(data.body);
@@ -122,34 +126,29 @@ class Home extends Component {
       });
     });
   };
-  handleChange = (event) => {
-    this.setState({ value: event.target.value });
-  };
-  handleSubmit = (event) => {
-    alert("A value was submitted: " + this.state.value);
-    event.preventDefault();
-  };
-  renderForm = () => {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <label htmlFor="tempo">
-          tempo
-          <input
-            type="range"
-            id="tempo"
-            name="tempo"
-            min="40"
-            max="200"
-            onChange={this.handleChange}
-          />
-        </label>
-        <output htmlFor="tempo">{this.state.value}</output>
-        <input type="submit" value="Submit" />
-      </form>
-    );
+
+  sliderCallback = (sliderName, sliderVal) => {
+    this.setState({ [sliderName]: sliderVal });
   };
 
   render() {
+    const sliderNames = [
+      "acousticness",
+      "danceability",
+      "duration",
+      "energy",
+      "instrumentalness",
+      "key",
+      "liveness",
+      "loudness",
+      "mode",
+      "popularity",
+      "speechiness",
+      "tempo",
+      "time_signature",
+      "valence",
+    ];
+
     return (
       <>
         <div className="Home-header">
@@ -169,15 +168,23 @@ class Home extends Component {
             <button onClick={this.getGenreSeeds}>get genre seeds</button>
             <button onClick={this.getRecs}>get recommendations</button>
             <h3>form</h3>
-            {this.renderForm()}
+            {sliderNames.map((sliderName) => (
+              <Slider
+                sliderName={sliderName}
+                sliderCallback={this.sliderCallback}
+                sliderMin={sliderRanges[sliderName].min}
+                sliderMax={sliderRanges[sliderName].max}
+                key={sliderName}
+              ></Slider>
+            ))}
           </div>
 
           <div className="Home-trackContainer">
-            <h3>ur tracks</h3>
+            <h3>your tracks</h3>
             {this.state.recs.map((track) => {
               return <div key={track.id}>{track.name}</div>;
             })}
-            <h3>ur seeds</h3>
+            <h3>your seeds</h3>
             {this.state.seedResults.map((seed) => {
               return (
                 <div key={seed.id}>
