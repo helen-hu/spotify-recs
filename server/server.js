@@ -18,7 +18,7 @@
 const validator = require("./validator");
 validator.checkSetup();
 
-require('dotenv').config();
+require("dotenv").config();
 //import libraries needed for the webserver to work!
 const http = require("http");
 const express = require("express"); // backend framework for our node server.
@@ -45,7 +45,9 @@ mongoose
     dbName: databaseName,
   })
   .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.log(`Error connecting to MongoDB: ${err}`, mongoConnectionURL, databaseName));
+  .catch((err) =>
+    console.log(`Error connecting to MongoDB: ${err}`, mongoConnectionURL, databaseName)
+  );
 
 // create a new express server
 const app = express();
@@ -94,8 +96,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-// hardcode port to 3000 for now
-const port = 3000;
+// hardcode port for now
+const port = 4000;
 const server = http.Server(app);
 socket.init(server);
 
